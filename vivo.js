@@ -1,4 +1,5 @@
 // To do:
+// -- use modern Javascript (see Wikidata) do not use Jquery
 // -- add isolator functions to loop -- looks like we are getting bleed through of predicates
 // -- handle photos
 // -- handle links -- things like web sites and entity references that should be links
@@ -99,6 +100,8 @@ vivo = {
     }
 }
 
+// Example of using the functions to create a profile from OpenVIVO data
+
 function pageLoadedHandler() {
 
     v = vivo.site("http://openvivo.org/tpf/core")
@@ -115,16 +118,16 @@ function pageLoadedHandler() {
             function(data) { vivo.show(data, "researcherId", true); })
         .getLiterals("http://vivoweb.org/ontology/core#scopusId",
             function(data) { vivo.show(data, "scopusId", true); })
-//        .getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#mainImage",
-//            function(data) {
-//                vivo.loop(data,
-//                    function(data){
-//                        vivo.getLiterals("http://vitro.mannlib.cornell.edu/ns/vitro/public#downloadLoction",
-//                            function(data) {
-//                                vivo.show(data, "photo", false);
-//                            })
-//                    })
-//            })
+        .getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#mainImage",
+            function(data) {
+                vivo.loop(data,
+                    function(data){
+                        vivo.getLiterals("http://vitro.mannlib.cornell.edu/ns/vitro/public#downloadLocation",
+                            function(data) {
+                                vivo.show(data, "photos", false);
+                            })
+                    })
+            })
         .getObjects("http://vivoweb.org/ontology/core#hasResearchArea",
             function(data) {
                 vivo.loop(data,
