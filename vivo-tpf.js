@@ -1,7 +1,9 @@
+// TPF functions to work with VIVO
+//
 // To do:
 // -- use modern Javascript (see Wikidata) do not use Jquery
+// -- add a showCount function to show the number of items in the data, rather than the data
 // -- add isolator functions to loop -- looks like we are getting bleed through of predicates
-// -- handle photos
 // -- handle links -- things like web sites and entity references that should be links
 // -- handle complex entities like pubs, positions, education -- these involve filtering and
 // -- switching the entity.  May need an insert to add elements to DOM for complex entities
@@ -38,6 +40,12 @@ vivo = {
         } else {
             docElement.innerHTML = data[0];
         }
+        return this;
+     },
+     showImg: function(data, id, multiple){ // put the data in the img src tag
+        var docElement = document.getElementById(id);
+        docElement.src = data[0]
+        console.log("In showImg. src = " + data[0]);
         return this;
     },
     get: function(predicateUri, g, f){  // get triples for the current subject, this predicate, all objects
@@ -99,55 +107,3 @@ vivo = {
         return this;
     }
 }
-
-// Example of using the functions to create a profile from OpenVIVO data
-
-function pageLoadedHandler() {
-
-    v = vivo.site("http://openvivo.org/tpf/core")
-        .entity("http://openvivo.org/a/orcid0000-0002-1304-8447")
-        .getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
-            function(data) { vivo.show(data, "label", false); })
-        .getLiterals("http://vivoweb.org/ontology/core#overview",
-            function(data) { vivo.show(data, "overview", false); })
-        .getLiterals("http://vivoweb.org/ontology/core#freetextKeyword",
-            function(data) { vivo.show(data, "freetextKeywords", true); })
-        .getLiterals("http://vivoweb.org/ontology/core#eRACommonsId",
-            function(data) { vivo.show(data, "eRACommonsId", true); })
-        .getLiterals("http://vivoweb.org/ontology/core#researcherId",
-            function(data) { vivo.show(data, "researcherId", true); })
-        .getLiterals("http://vivoweb.org/ontology/core#scopusId",
-            function(data) { vivo.show(data, "scopusId", true); })
-        .getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#mainImage",
-            function(data) {
-                vivo.loop(data,
-                    function(data){
-                        vivo.getLiterals("http://vitro.mannlib.cornell.edu/ns/vitro/public#downloadLocation",
-                            function(data) {
-                                vivo.show(data, "photos", false);
-                            })
-                    })
-            })
-        .getObjects("http://vivoweb.org/ontology/core#hasResearchArea",
-            function(data) {
-                vivo.loop(data,
-                    function(data){
-                        vivo.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
-                            function(data) {
-                                vivo.show(data, "researchAreas", true);
-                            })
-                    })
-            })
-        .getObjects("http://purl.obolibrary.org/obo/RO_0001025",
-            function(data) {
-                vivo.loop(data,
-                    function(data){
-                        vivo.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
-                            function(data) {
-                                vivo.show(data, "geographicLocations", false);
-                            })
-                    })
-            });
-}
-
-window.onload = pageLoadedHandler;
