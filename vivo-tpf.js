@@ -2,11 +2,11 @@
 //
 // To do:
 // -- use modern Javascript (see Wikidata) do not use Jquery
-// -- add a showCount function to show the number of items in the data, rather than the data
 // -- add isolator functions to loop -- looks like we are getting bleed through of predicates
 // -- handle links -- things like web sites and entity references that should be links
+// -- handle paging -- current queries limited to 100 rows in result sets
 // -- handle complex entities like pubs, positions, education -- these involve filtering and
-// -- switching the entity.  May need an insert to add elements to DOM for complex entities
+//    switching the entity.  May need an insert to add elements to DOM for complex entities
 
 function extractLiterals(data, s, p) { // create an object array of Literals from the TPF return
     var re = new RegExp("<"+ s +"> <" + p + "> \"(.*?)\"", "g");
@@ -42,10 +42,16 @@ vivo = {
         }
         return this;
      },
-     showImg: function(data, id, multiple){ // put the data in the img src tag
+     showImg: function(data, id){ // put the data in the img src tag
         var docElement = document.getElementById(id);
-        docElement.src = data[0]
+        docElement.src = data[0];
         console.log("In showImg. src = " + data[0]);
+        return this;
+    },
+    showCount: function(data, id){ // put the count (length) of the data into the DOM at the id
+        var docElement = document.getElementById(id);
+        docElement.innerHTML = data.length;
+        console.log("In showCount. n = " + data.length);
         return this;
     },
     get: function(predicateUri, g, f){  // get triples for the current subject, this predicate, all objects

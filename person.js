@@ -47,6 +47,18 @@ function pageLoadedHandler() {
                                 vivo.show(data, "geographicLocations", false);
                             })
                     })
+            })
+        .getObjects("http://purl.obolibrary.org/obo/RO_0000056",
+            function(data) {
+                vivo.showCount(data, "participatesInCount", false);
+            })
+        .getObjects("http://purl.obolibrary.org/obo/RO_0000053",
+            function(data) {
+                vivo.showCount(data, "bearerOfCount", false);
+            })
+        .getObjects("http://vivoweb.org/ontology/core#relatedBy",
+            function(data) {
+                vivo.showCount(data, "relatedByCount", false);
             });
 }
 

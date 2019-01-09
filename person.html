@@ -4,28 +4,31 @@
     <title>Bootstrap Example</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="vivo-tpf.js"></script>
-
+    <link rel="stylesheet" href="vivo-tpf.css">
 </head>
-<body class="container">
+<body>
     <h1 id="label"></h1>
     <img id="photo" width="200" height="200">
-    <h2>Overview</h2>
-    <div id="overview"></div>
-    <h2>Geographic Location</h2>
-    <div id="geographicLocations"></div>
-    <h2>Research Areas</h2>
-    <div id="researchAreas"></div>
-    <h2>Keywords</h2>
-    <div id="freetextKeywords"></div>
-    <h2>Identifiers</h2>
-    <div style="display: inline-block;">eraCommons ID &nbsp;</div><div style="display:inline-block;" id="eRACommonsId"></div><br/>
-    <div style="display: inline-block;">Researcher ID &nbsp;</div><div style="display:inline-block;" id="researcherId"></div><br/>
-    <div style="display: inline-block;">Scopus ID &nbsp;</div><div style="display:inline-block;" id="scopusId"></div>
+    <p id="overview"></p>
 
-<script src="person.js"></script>
+    <p class="ib leader">Location:&nbsp;</p><p class="ib" id="geographicLocations"></p>
+    <h2>Research Areas</h2>
+    <p id="researchAreas"></p>
+    <h2>Keywords</h2>
+    <p id="freetextKeywords"></p>
+
+    <h2>Identifiers</h2>
+    <p class="ib">eraCommons ID &nbsp;</p><p class="ib" id="eRACommonsId"></p><br/>
+    <p class="ib">Researcher ID &nbsp;</p><p class="ib" id="researcherId"></p><br/>
+    <p class="ib">Scopus ID &nbsp;</p><p class="ib" id="scopusId"></p><br/>
+
+    <h2>Counts</h2>
+    <p class="ib">relatedBy&nbsp;</p><p class="ib" id="relatedByCount"></p><br/>
+    <p class="ib">participatesIn&nbsp;</p><p class="ib" id="participatesInCount"></p><br/>
+    <p class="ib">bearerOf&nbsp;</p><p class="ib" id="bearerOfCount"></p><br/>
+
+    <script src="person.js"></script>
 </body>
 </html>

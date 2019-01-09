@@ -1,0 +1,47 @@
+/*
+
+  Style for the vivo-tpf experiment
+
+  Caution: Not very familiar with CSS, so there's likely much that can be improved here
+
+*/
+
+body {
+  margin: 10% 10% 10% 10%;
+  font-size: 100%;
+}
+
+h1, h2, h3, p {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-weight: lighter;
+
+}
+
+h1 {
+  font-size: 2.5em; /* 40px/16=2.5em */
+}
+
+h2 {
+  font-size: 1.875em; /* 30px/16=1.875em */
+}
+
+p {
+  font-size: 0.875em; /* 14px/16=0.875em */
+}
+
+p.ib {
+  display: inline-block;
+}
+
+p.leader {
+  font-weight: bold;
+}
+
+img {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 100%;
+}
+
+#researchAreas {
+  font-style: italic;
+  }
