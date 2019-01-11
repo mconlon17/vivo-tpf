@@ -1,115 +1,115 @@
-// TPF functions to work with VIVO
+//  Access functions for VIVO
 //
-// To do:
-// -- use modern Javascript (see Wikidata) do not use Jquery
-// -- add isolator functions to loop -- looks like we are getting bleed through of predicates
-// -- handle links -- things like web sites and entity references that should be links
-// -- handle paging -- current queries limited to 100 rows in result sets
-// -- handle complex entities like pubs, positions, education -- these involve filtering and
-//    switching the entity.  May need an insert to add elements to DOM for complex entities
+//  All ontological knowledge is encapsulated here
+//  Designers us access functions to put data on pages using id tags in their pages
+//
+//  Each page has a window.onload handler to call the required access functions for the page.  See
+//  person.js for a page loader for the person.html page
 
-function extractLiterals(data, s, p) { // create an object array of Literals from the TPF return
-    var re = new RegExp("<"+ s +"> <" + p + "> \"(.*?)\"", "g");
-    return data.match(re).map(function(txt) {return txt.match(/\"(.*?)\"/)[1]});
-};
+function showOrcid(s, id){
+    s.getObjects("http://vivoweb.org/ontology/core#orcidId",
+        function(data) { s.show(data, id); })
+}
 
-function extractObjects(data, s, p) { // create an object array of Object references from the TPF return
-    var re = new RegExp("<"+ s +"> <" + p + "> <.*?>", "g");
-    return data.match(re).map(function(txt) {return txt.match(/<.*?> <.*?> <(.*?)>/)[1]});
-};
+function showPhoto(s, id){
+    s.getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#mainImage",
+        function(data) {
+            s.loop(data,
+                function(data){
+                    s.getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#downloadLocation",
+                        function(data) {
+                            s.showImg(data, id);
+                        })
+                })
+        })
+}
 
-vivo = {
-    site: "",
-    predicateUri: "",
-    subjectUri: "",
-    entity: function(entityUri){ // set the entity for which data will be returned
-        this.subjectUri = entityUri; // set the subject to the entity to start.  loop will alter
-        return this;
-    },
-    site: function(siteUrl){ // set the URL for the TPF endpoint for the site
-        this.site = siteUrl;
-        return this;
-    },
-    show: function(data, id, multiple){ // put data values into the DOM at the id.  Multiple true for concatenation
-        var docElement = document.getElementById(id);
-        console.log("In show: " + typeof data + data);
-        if (multiple && data.length > 1) {
-            docElement.innerHTML = data.join(", ");
-        } else if (multiple && data.length == 1 && docElement.innerHTML.length > 0) {
-            docElement.innerHTML = docElement.innerHTML + ', ' + data[0];
-        } else {
-            docElement.innerHTML = data[0];
-        }
-        return this;
-     },
-     showImg: function(data, id){ // put the data in the img src tag
-        var docElement = document.getElementById(id);
-        docElement.src = data[0];
-        console.log("In showImg. src = " + data[0]);
-        return this;
-    },
-    showCount: function(data, id){ // put the count (length) of the data into the DOM at the id
-        var docElement = document.getElementById(id);
-        docElement.innerHTML = data.length;
-        console.log("In showCount. n = " + data.length);
-        return this;
-    },
-    get: function(predicateUri, g, f){  // get triples for the current subject, this predicate, all objects
-        this.predicateUri = predicateUri;
-        var hPredicateUri = this.predicateUri;
-        var hSiteUri = this.site;
-        if (typeof hSubjectUri == 'undefined') {
-            hSubjectUri = this.subjectUri;
-        }
+function showResearchAreas(s, id) {
+    s.getObjects("http://vivoweb.org/ontology/core#hasResearchArea",
+        function(data) {
+            s.loop(data,
+                function(data){
+                    s.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
+                        function(data) {
+                            s.showMultiple(data, id);
+                        })
+                })
+        })
+}
 
-        function makeSuccessFunction(s, p){
-             return function(data) {
-                return f(data, s, p);
-                }
-        };
+function showGeographicLocations(s, id) {
+    s.getObjects("http://purl.obolibrary.org/obo/RO_0001025",
+        function(data) {
+            s.loop(data,
+                function(data){
+                    s.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
+                        function(data) {
+                            s.showMultiple(data, id);
+                        })
+                })
+        })
+}
 
-        var successFunction = makeSuccessFunction(hSubjectUri, hPredicateUri);
 
-        function makeDataFilterFunction(s, p){
-             return function(data) {
-                return g(data, s, p);
-                }
-        };
+function showLabel(s, id) {
+    s.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
+        function(data) {
+            s.show(data, id);
+        })
+}
 
-        var dataFilterFunction = makeDataFilterFunction(hSubjectUri, hPredicateUri);
+function showOverview(s, id) {
+    s.getLiterals("http://vivoweb.org/ontology/core#overview",
+        function(data) {
+            s.show(data, id);
+        })
+}
 
-        $.ajax({
-            headers: {Accept : "application/n-triples; charset=utf-8"},
-            url: hSiteUri,
-            data: {subject: hSubjectUri, predicate: hPredicateUri, object: "", page: "1"},
-            dataFilter: function(data) { return dataFilterFunction(data);},
-            success: function(data) { successFunction(data); }
-            });
-        return this;
-    },
-    getLiterals: function(p, f) { return vivo.get(p, extractLiterals, f); },
-    getObjects: function(p, f) { return vivo.get(p, extractObjects, f); },
-    filter: function(data, f){ // filter the object array, to do
-        f(data);
-        return this;
-    },
-    loop: function(data, f) { // loop over the object array, each object becomes a new subject
-        hPredicateUri = this.predicateUri;
+function showFreetextKeywords(s, id) {
+    s.getLiterals("http://vivoweb.org/ontology/core#freetextKeyword",
+        function(data) {
+            s.showMultiple(data, id);
+        })
+}
 
-    //  a function here to encapsulate predicate?  Predicate is changing through independent asynchronous
-    //  processes
+function showERACommonsId(s, id) {
+    s.getLiterals("http://vivoweb.org/ontology/core#eRACommonsId",
+        function(data) {
+            s.show(data, id);
+        })
+}
 
-        for (var i = 0; i < data.length; i++){
-            (function(i){
-                hSubjectUri = data[i];
+function showResearcherId(s, id) {
+    s.getLiterals("http://vivoweb.org/ontology/core#researcherId",
+        function(data) {
+            s.show(data, id);
+        })
+}
 
-                //  and another function here to encapsulate subject? No problems so far with subject, but
-                //  additional asynchronous code could possibly cause changes in hSubjectUri
+function showScopusId(s, id) {
+    s.getLiterals("http://vivoweb.org/ontology/core#scopusId",
+        function(data) {
+            s.show(data, id);
+        })
+}
 
-                console.log("In loop", hSubjectUri, hPredicateUri);
-                f(data);
-                })(i);
-        }
-        return this;
-    }
+function showParticipatesInCount(s, id) {  // probably not interesting.  Want domain entities like degrees held
+    s.getObjects("http://purl.obolibrary.org/obo/RO_0000056",
+        function(data) {
+            s.showCount(data, id);
+        })
+}
+
+function showBearerOfCount(s, id) {
+    s.getObjects("http://purl.obolibrary.org/obo/RO_0000053",
+        function(data) {
+            s.showCount(data, id);
+        })
+}
+
+function showRelatedByCount(s, id) {
+    s.getObjects("http://vivoweb.org/ontology/core#relatedBy",
+        function(data) {
+            s.showCount(data, id);
+        })
 }

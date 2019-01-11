@@ -4,62 +4,30 @@
 
 function pageLoadedHandler() {
 
+    // Establish the site and entity
+    //
+    // Note that a handler could establish multiple site objects and use them in access functions
+    // to put things on the screen from multiple sites
+
     v = vivo.site("http://openvivo.org/tpf/core")
-        .entity("http://openvivo.org/a/orcid0000-0002-1304-8447")
-        .getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
-            function(data) { vivo.show(data, "label", false); })
-        .getLiterals("http://vivoweb.org/ontology/core#overview",
-            function(data) { vivo.show(data, "overview", false); })
-        .getLiterals("http://vivoweb.org/ontology/core#freetextKeyword",
-            function(data) { vivo.show(data, "freetextKeywords", true); })
-        .getLiterals("http://vivoweb.org/ontology/core#eRACommonsId",
-            function(data) { vivo.show(data, "eRACommonsId", true); })
-        .getLiterals("http://vivoweb.org/ontology/core#researcherId",
-            function(data) { vivo.show(data, "researcherId", true); })
-        .getLiterals("http://vivoweb.org/ontology/core#scopusId",
-            function(data) { vivo.show(data, "scopusId", true); })
-        .getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#mainImage",
-            function(data) {
-                vivo.loop(data,
-                    function(data){
-                        vivo.getObjects("http://vitro.mannlib.cornell.edu/ns/vitro/public#downloadLocation",
-                            function(data) {
-                                vivo.showImg(data, "photo");
-                            })
-                    })
-            })
-        .getObjects("http://vivoweb.org/ontology/core#hasResearchArea",
-            function(data) {
-                vivo.loop(data,
-                    function(data){
-                        vivo.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
-                            function(data) {
-                                vivo.show(data, "researchAreas", true);
-                            })
-                    })
-            })
-        .getObjects("http://purl.obolibrary.org/obo/RO_0001025",
-            function(data) {
-                vivo.loop(data,
-                    function(data){
-                        vivo.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",
-                            function(data) {
-                                vivo.show(data, "geographicLocations", false);
-                            })
-                    })
-            })
-        .getObjects("http://purl.obolibrary.org/obo/RO_0000056",
-            function(data) {
-                vivo.showCount(data, "participatesInCount", false);
-            })
-        .getObjects("http://purl.obolibrary.org/obo/RO_0000053",
-            function(data) {
-                vivo.showCount(data, "bearerOfCount", false);
-            })
-        .getObjects("http://vivoweb.org/ontology/core#relatedBy",
-            function(data) {
-                vivo.showCount(data, "relatedByCount", false);
-            });
+        .entity("http://openvivo.org/a/orcid0000-0002-1304-8447");
+
+    // Call domain specific access functions using the v object to put things on the screen
+    // These functions can be in any order -- they are asynchronous and complete independently
+
+    showOrcid(v, "orcidId"); // encapsulate the ontological detail. Retrieve from v, place at id
+    showPhoto(v, "photo");
+    showResearchAreas(v, "researchAreas");
+    showGeographicLocations(v, "geographicLocations");
+    showParticipatesInCount(v, "participatesInCount");
+    showLabel(v, "label");
+    showOverview(v, "overview");
+    showFreetextKeywords(v, "freetextKeywords");
+    showERACommonsId(v, "eRACommonsId");
+    showResearcherId(v, "researcherId");
+    showBearerOfCount(v, "bearerOfCount");
+    showScopusId(v, "scopusId");
+    showRelatedByCount(v, "relatedByCount");
 }
 
 window.onload = pageLoadedHandler;
