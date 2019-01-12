@@ -28,6 +28,7 @@ function pageLoadedHandler() {
     showBearerOfCount(v, "bearerOfCount");
     showScopusId(v, "scopusId");
     showRelatedByCount(v, "relatedByCount");
+    showTitle(v, "title");
 }
 
 window.onload = pageLoadedHandler;

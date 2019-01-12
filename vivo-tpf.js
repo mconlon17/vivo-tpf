@@ -37,6 +37,25 @@ function showResearchAreas(s, id) {
         })
 }
 
+function showTitle(s, id) {
+    s.getObjects("http://purl.obolibrary.org/obo/ARG_2000028",
+        function(data) {
+            s.loop(data,
+                function(data){
+                    s.getObjects("http://www.w3.org/2006/vcard/ns#hasTitle",
+                        function(data){
+                            s.loop(data,
+                                function(data){
+                                    s.getLiterals("http://www.w3.org/2006/vcard/ns#title",
+                                        function(data) {
+                                            s.show(data, id);
+                                        })
+                                })
+                        })
+                })
+        })
+}
+
 function showGeographicLocations(s, id) {
     s.getObjects("http://purl.obolibrary.org/obo/RO_0001025",
         function(data) {
@@ -49,7 +68,6 @@ function showGeographicLocations(s, id) {
                 })
         })
 }
-
 
 function showLabel(s, id) {
     s.getLiterals("http://www.w3.org/2000/01/rdf-schema#label",

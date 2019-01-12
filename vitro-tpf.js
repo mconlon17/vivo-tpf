@@ -2,11 +2,13 @@
 //
 // To do:
 //
+// -- refactor name of loop to foreach
 // -- use modern Javascript (see Wikidata) do not use Jquery
-// -- add isolator functions to loop -- looks like we are getting bleed through of predicates
+// -- preserve context through depth.  Entity -> object -> object -> Literal.  Access functions need
+//    access to this context and know how to retrieve from it
 // -- handle links -- things like web sites and entity references that should be links
 // -- handle paging -- current queries limited to 100 rows in result sets
-// -- handle complex entities like pubs, positions, education -- these involve filtering and
+// -- handle complex entities such as pubs, positions, education -- these involve filtering and
 //    switching the entity.  May need an insert to add elements to DOM for complex entities
 
 function extractLiterals(data, s, p) { // create an object array of Literals from the TPF return
@@ -100,7 +102,7 @@ vivo = {
     },
     getLiterals: function(p, f) { return vivo.get(p, extractLiterals, f); },
     getObjects: function(p, f) { return vivo.get(p, extractObjects, f); },
-    filter: function(data, f){ // filter the object array, to do
+    filter: function(data, o, f){ // filter the data for type o, call f
         f(data);
         return this;
     },
