@@ -25,6 +25,7 @@ vivo = {
     site: "",
     predicateUri: "",
     subjectUri: "",
+    objectUri: "",
     entity: function(entityUri){ // set the entity for which data will be returned
         this.subjectUri = entityUri; // set the subject to the entity to start.  loop will alter
         return this;
@@ -74,6 +75,7 @@ vivo = {
         if (typeof hSubjectUri == 'undefined') {
             hSubjectUri = this.subjectUri;
         }
+        var hObjectUri = this.objectUri;
 
         function makeSuccessFunction(s, p){
              return function(data) {
@@ -94,7 +96,7 @@ vivo = {
         $.ajax({
             headers: {Accept : "application/n-triples; charset=utf-8"},
             url: hSiteUri,
-            data: {subject: hSubjectUri, predicate: hPredicateUri, object: "", page: "1"},
+            data: {subject: hSubjectUri, predicate: hPredicateUri, object: hObjectUri, page: "1"},
             dataFilter: function(data) { return dataFilterFunction(data);},
             success: function(data) { successFunction(data); }
             });
